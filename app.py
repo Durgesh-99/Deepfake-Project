@@ -63,4 +63,5 @@ def home_or_predict():
         return jsonify({"predicted_class": predicted_class, "confidence": confidence})
 
 if __name__ == "__main__":
+    print("🔥 Flask server is running on http://0.0.0.0:5000 🔥")
     app.run(host="0.0.0.0", port=5000)
