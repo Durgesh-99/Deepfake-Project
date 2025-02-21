@@ -43,24 +43,24 @@ def preprocess_image(image):
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
 
-@app.route("/", methods=["GET"])
-def home():
-    return "Flask server is running!"
+@app.route("/", methods=["GET", "POST"])
+def home_or_predict():
+    if request.method == "GET":
+        return "Flask server is running!"
 
-@app.route("/", methods=["POST"])
-def predict():
-    if "image" not in request.files:
-        return jsonify({"error": "No image uploaded"}), 400
-    
-    file = request.files["image"]
-    image = Image.open(io.BytesIO(file.read())).convert("RGB")  # Open image
-    processed_image = preprocess_image(image)  # Preprocess
-    
-    predictions = model.predict(processed_image)  # Model inference
-    predicted_class = int(np.argmax(predictions))  # Get class index
-    confidence = float(np.max(predictions))  # Get confidence score
-    
-    return jsonify({"predicted_class": predicted_class, "confidence": confidence})
+    if request.method == "POST":
+        if "image" not in request.files:
+            return jsonify({"error": "No image uploaded"}), 400
+
+        file = request.files["image"]
+        image = Image.open(io.BytesIO(file.read())).convert("RGB")  # Open image
+        processed_image = preprocess_image(image)  # Preprocess
+
+        predictions = model.predict(processed_image)  # Model inference
+        predicted_class = int(np.argmax(predictions))  # Get class index
+        confidence = float(np.max(predictions))  # Get confidence score
+
+        return jsonify({"predicted_class": predicted_class, "confidence": confidence})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
