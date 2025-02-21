@@ -43,6 +43,10 @@ def preprocess_image(image):
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
 
+@app.route("/", methods=["GET"])
+def home():
+    return "Flask server is running!"
+
 @app.route("/", methods=["POST"])
 def predict():
     if "image" not in request.files:
