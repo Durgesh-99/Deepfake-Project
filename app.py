@@ -62,6 +62,8 @@ def home_or_predict():
         predicted_class = int(np.argmax(predictions))  # Get class index
         confidence = float(np.max(predictions))  # Get confidence score
         return jsonify({"class": predicted_class, "confidence": confidence})
+    
+    return 0
 
 if __name__ == "__main__":
     print("🔥 Flask server is running on PORT=5000 🔥")
