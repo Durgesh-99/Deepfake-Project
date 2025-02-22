@@ -1,9 +1,13 @@
 import tensorflow as tf
 from tensorflow import keras
 import numpy as np
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from PIL import Image
+from flask_cors import CORS
 import io
+
+app = Flask(__name__)
+CORS(app)
 
 @tf.keras.utils.register_keras_serializable()
 class PositionalEmbedding(tf.keras.layers.Layer):
@@ -34,8 +38,6 @@ class PositionalEmbedding(tf.keras.layers.Layer):
 custom_objects = {"PositionalEmbedding": PositionalEmbedding}
 model = tf.keras.models.load_model("deepfake_proto1_bestweights_256_256.keras", custom_objects=custom_objects)
 
-app = Flask(__name__)
-
 def preprocess_image(image):
     """Preprocess image to match model input requirements."""
     image = image.resize((256, 256))  # Resize to match model input size
@@ -46,7 +48,7 @@ def preprocess_image(image):
 @app.route("/", methods=["GET", "POST"])
 def home_or_predict():
     if request.method == "GET":
-        return "Flask server is running!"
+        return make_response("Flask server is running!", 200)
 
     if request.method == "POST":
         if "image" not in request.files:
@@ -59,9 +61,8 @@ def home_or_predict():
         predictions = model.predict(processed_image)  # Model inference
         predicted_class = int(np.argmax(predictions))  # Get class index
         confidence = float(np.max(predictions))  # Get confidence score
-
-        return jsonify({"predicted_class": predicted_class, "confidence": confidence})
+        return jsonify({"class": predicted_class, "confidence": confidence})
 
 if __name__ == "__main__":
-    print("🔥 Flask server is running on http://0.0.0.0:5000 🔥")
+    print("🔥 Flask server is running on PORT=5000 🔥")
     app.run(host="0.0.0.0", port=5000)

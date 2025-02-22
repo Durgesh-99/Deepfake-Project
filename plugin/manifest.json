@@ -1,0 +1,24 @@
+{
+    "manifest_version": 3,
+    "name": "Deepfake Detector",
+    "version": "1.0",
+    "description": "Detects deepfake images.",
+    "permissions": [
+      "activeTab",
+      "contextMenus",
+      "scripting",
+      "windows"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+        "default_icon": "icon.png"
+    },
+    "icons": {
+        "16": "icon.png",
+        "32": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+    }
+}
