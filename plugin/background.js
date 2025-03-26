@@ -68,9 +68,6 @@ function checkSingleImage(imageUrl) {
             });
         })
         .then(response => response.json())
-        .then(data => {
-            alert(data.class === 1 ? "✅ This image is real!" : "🚨 This image is fake!");
-        })
         .catch(error => {
             alert("Error checking image: " + error.message);
         });
