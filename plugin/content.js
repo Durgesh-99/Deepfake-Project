@@ -31,11 +31,7 @@ async function processImage(image) {
 
         const data = await serverResponse.json();
         addOverlay(image, data.class === 1);
-    } catch (error) {
-        if (error.name !== "AbortError") { // Ignore abort errors
-            console.error("Error processing image:", error.message);
-        }
-    }
+    } catch (error) { }
 }
 
 function stopProcessing() {
