@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detector</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="spinner"></div>
+    <div class="container">
+        <h1>Deepfake Detector</h1>
+        <h3>Upload an image</h3>
+        <div class="file">
+            <label for="fileInput" class="button-24">Choose File</label>
+            <input type="file" id="fileInput" accept="image/*">
+            <span id="fileName">No file chosen</span>
+        </div>
+        <img id="preview">
+        <br>
+        <button onclick="uploadImage()" class="button-29">Upload</button>
+        <br>
+        <p id="response"></p>
+    </div>
+
+    <script>
+        document.getElementById("fileInput").addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById("fileName").innerText = file.name;
+                document.getElementById("fileName").style.display = "inline";
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById("preview");
+                    img.src = e.target.result;
+                    img.style.display = "block";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function uploadImage() {
+            const fileInput = document.getElementById("fileInput");
+            if (!fileInput.files.length) {
+                alert("Please select an image!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+
+            const spinnerElement = document.getElementById("spinner");
+            spinnerElement.innerHTML = '<div class="spinnerContainer"><span class="loader"></span></div>';
+
+            fetch("http://127.0.0.1:5000", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseElement = document.getElementById("response");
+                responseElement.innerHTML = "";
+                spinnerElement.innerHTML = "";
+
+                // Create the first element
+                const firstElement = document.createElement("span");
+                firstElement.innerText = "Image is ";
+                firstElement.style.color = ""
+                
+                // Create the second element
+                const secondElement = document.createElement("span");
+                if ("class" in data) {
+                    secondElement.innerText = data.class === 0 ? "Fake" : "Real";
+                    secondElement.style.color = data.class === 0 ? "red" : "#4be708";
+                } else {
+                    secondElement.innerText = "Unknown";
+                }
+                
+                // Create confidence element
+                const confidenceElement = document.createElement("span");
+                if ("confidence" in data) {
+                    confidenceElement.innerText = `\nConfidence: ${(data.confidence * 100).toFixed(2)}%`;
+                }
+
+                // Append the elements to the response element
+                responseElement.appendChild(firstElement);
+                responseElement.appendChild(secondElement);
+                responseElement.appendChild(confidenceElement);
+            })
+            .catch(error => {
+                spinnerElement.innerHTML = "";
+                console.error("Error:", error);
+                const resElement = document.getElementById("response");
+                resElement.innerText = "Error uploading image!";
+                resElement.style.color = "red"; // Change the text color to red
+            });
+        }
+    </script>
+</body>
+</html>
