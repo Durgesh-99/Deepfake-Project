@@ -129,13 +129,6 @@ class TransformerBlock(torch.nn.Module):
         x = residual + self.mlp(x)
         return x
 
-# --- Model Loading Function ---
-def load_model(path="model.pth"):
-    model = Proto1(img_size=256, num_classes=2)
-    model.load_state_dict(torch.load(path, map_location="cpu"))
-    model.eval()
-    return model
-
 # --- Preprocessing Function ---
 def preprocess_image(image: Image.Image):
     transform = transforms.Compose([

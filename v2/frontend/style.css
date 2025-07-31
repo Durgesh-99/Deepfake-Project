@@ -9,14 +9,17 @@ body {
 }  
 
 .container {
+    position: relative;
     display: flex;
     flex-direction: column;
-    margin: 50px auto;
+    margin: 100px auto;
     background-color: white;
     width: 50%;
     height: fit-content;
     padding: 30px;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 10px;
+  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+			0 10px 10px rgba(0,0,0,0.22);
     align-items: center;
 }
 
@@ -240,5 +243,71 @@ button:hover {
   }
 }
     
-    
+.model_id {
+    position: absolute;
+    color: grey;
+    font-family: 'Courier New', Courier, monospace;
+    right: 10px;
+    top: -10px;
+}
+
+#subscribe {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    right: 10px;
+    top: 10px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    width: 170px;
+}
+
+#subscribe:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+			0 10px 10px rgba(0,0,0,0.22);
+    cursor: pointer;
+}
+
+.comparison {
+  display: flex;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  flex-direction: row;
+  font-size: large;
+}
+
+.comparison .container {
+  width: 600px;
+}
+
+.comparison .button-24 {
+  background-color: rgb(187, 255, 84);
+  border-color: white;
+  color: rgb(10, 10, 10);
+}
+
+.comparison i {
+  margin-right: 5px;
+}
       
+#back {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    left: 10px;
+    top: 10px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    width: 50px;
+}
+
+#back:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+			0 10px 10px rgba(0,0,0,0.22);
+    cursor: pointer;
+}

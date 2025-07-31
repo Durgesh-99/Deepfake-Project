@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deepfake Detector</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.css">
+</head>
+<body>
+    <div id="back">       
+        <span><i class="fas fa-chevron-left"></i></span>
+        <span>Back</span>
+    </div>
+    <div class="comparison">
+        <div class="container">
+            <h1>Model 1.0</h1>
+            <p><i class="fas fa-check"></i>Small Model Size</p>
+            <p><i class="fas fa-check"></i>Efficient Detection</p>
+            <p><i class="fas fa-check"></i>Limited Image Detection</p>
+            <p><i class="fas fa-check"></i>Max Image Resolution 1280x720px</p>
+            <p class="model_1.0"></p>
+        </div>
+        <div class="container">
+            <h1>Model 1.5</h1>
+            <p><i class="fas fa-check"></i>Comprehensive Model</p>
+            <p><i class="fas fa-check"></i>More Generalized Detection</p>
+            <p><i class="fas fa-check"></i>Unlimited Image Detection</p>
+            <p><i class="fas fa-check"></i>Max Image Resolution 1920x1080px</p>
+            <p class="model_1.5"></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to render buttons based on subscription status
+        function renderButtons() {
+            const dfd = localStorage.getItem('DFD_SUBSCRIBE');
+            const M1_5Element = document.getElementsByClassName("model_1.5")[0];
+            const M1_0Element = document.getElementsByClassName("model_1.0")[0];
+
+            if (dfd === 'TRUE') {
+                M1_5Element.innerHTML = '<button class="button-24" style="background-color: white; color: grey;">Currently Using</button>';
+                M1_0Element.innerHTML = '<button class="button-24" style="background-color: white; color: grey;">Default Model</button>';
+            } else {
+                M1_5Element.innerHTML = '<button id="subscribe_btn" class="button-24">Subscribe</button>';
+                M1_0Element.innerHTML = '<button class="button-24" style="background-color: white; color: grey;">Currently Using</button>';
+
+                // Attach event listener after button is added to DOM
+                document.getElementById('subscribe_btn').addEventListener('click', function (e) {
+                    e.preventDefault();
+                    localStorage.setItem('DFD_SUBSCRIBE', 'TRUE');
+                    alert('Subscribed Successfully! Using Model 1.5');
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+
+        document.getElementById('back').addEventListener('click', function () {
+                    window.location.href = 'index.html';
+                });
+
+        // Run on page load
+        window.onload = renderButtons;
+    </script>
+
+</body>
+</html>

@@ -5,10 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deepfake Detector</title>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.css">
 </head>
 <body>
     <div id="spinner"></div>
+    <div id="subscribe">
+        <span><i class="fas fa-info-circle"></i></span>
+        <span>Get more powerfull model for detection</span>
+    </div>
     <div class="container">
+        <h4 class="model_id"></h4>
         <h1>Deepfake Detector</h1>
         <h3>Upload an image</h3>
         <div class="file">
@@ -48,11 +54,14 @@
 
             const formData = new FormData();
             formData.append("image", fileInput.files[0]);
+ 
+            const dfd = localStorage.getItem('DFD_SUBSCRIBE');
+            formData.append("DFD_SUBSCRIBE", dfd);
 
             const spinnerElement = document.getElementById("spinner");
             spinnerElement.innerHTML = '<div class="spinnerContainer"><span class="loader"></span></div>';
 
-            fetch("http://127.0.0.1:5000", {
+            fetch("http://127.0.0.1:8000", {
                 method: "POST",
                 body: formData
             })
@@ -95,6 +104,19 @@
                 resElement.style.color = "red"; // Change the text color to red
             });
         }
+
+        document.getElementById('subscribe').addEventListener('click', function () {
+				window.location.href = 'subscribe.html';
+			});
+    
+        const dfd = localStorage.getItem('DFD_SUBSCRIBE');
+        const modelElement = document.getElementsByClassName("model_id")[0];
+        if (dfd === 'TRUE') {
+            modelElement.innerHTML = 'Using Model 1.5';
+        } else {
+            modelElement.innerHTML = 'Using Model 1.0';
+        }
+
     </script>
 </body>
 </html>
