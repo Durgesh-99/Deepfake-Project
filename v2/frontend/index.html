@@ -30,22 +30,33 @@
     </div>
 
     <script>
-        if (!localStorage.getItem("df_email")) {
-            window.location.href = "login.html";
-        }
         async function fetchModel() {
-            const email = localStorage.getItem("df_email");
+            const token = localStorage.getItem("token");
             let dfd;
+            console.log(token)
             try{
                 const res = await fetch("http://127.0.0.1:8000/get-model", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                headers: { 
+                    "Content-Type": "application/json" ,
+                    "Authorization": `Bearer ${token}`
+                },
                 });
+
+                if (res.status === 401) {
+                    alert("Unauthorized: Your session has expired. Please log in again.");
+                    window.location.href = 'login.html';
+                    return;
+                } else if (res.status === 404) {
+                    alert("User not found.");
+                    return;
+                } else if (!res.ok) {
+                    alert(`Unexpected error: ${res.status}`);
+                    return;
+                }
 
                 const data = await res.json();
                 dfd = data.model;
-                console.log(dfd)
 
                 const modelElement = document.getElementsByClassName("model_id")[0];
                 if (dfd === '1_5') {

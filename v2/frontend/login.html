@@ -8,9 +8,10 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.css">
 </head>
 <body>
+	<div id="spinner"></div>
 	<div class="container" id="container">
 		<div class="form-container sign-up-container">
-			<form>
+			<form action="submit">
 				<h1>Create Account</h1>
 				<div class="social-container">
 					<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -21,11 +22,11 @@
 				<input id="name" type="text" placeholder="Name" />
 				<input id="email1" type="email" placeholder="Email" />
 				<input id="password1" type="password" placeholder="Password" />
-				<button id="signin" type="button">Sign Up</button>
+				<button id="signin" type="submit">Sign Up</button>
 			</form>
 		</div>
 		<div class="form-container sign-in-container">
-			<form>
+			<form action="submit">
 				<h1>Sign in</h1>
 				<div class="social-container">
 					<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -36,7 +37,7 @@
 				<input id="email2" type="email" placeholder="Email" />
 				<input id="password2" type="password" placeholder="Password" />
 				<a href="#">Forgot your password?</a>
-				<button id="login" type="button">Login</button>
+				<button id="login" type="submit">Login</button>
 			</form>
 		</div>
 		<div class="overlay-container">
@@ -70,25 +71,31 @@
 		
 		document.getElementById('login').addEventListener('click', async (e) => {
 				e.preventDefault();
+				const spinnerElement = document.getElementById("spinner");
+            	spinnerElement.innerHTML = '<div class="spinnerContainer"><span class="loader"></span></div>';
+				
 				const email = document.getElementById("email2").value;
 				const password = document.getElementById("password2").value;
 				const action = "login";
 
 				const body = { email, password, action };
-				localStorage.setItem("df_email",email)
 				try{
 					const res = await fetch("http://127.0.0.1:8000/auth", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(body),
 				});
+				spinnerElement.innerHTML = "";
 				const data = await res.json()
 				if (!res.ok) {
 					throw new Error(data.detail || "Something went wrong");
 				}
+				localStorage.setItem("token", data.token);
 				alert(data.message);
 				window.location.href = 'index.html';
+
 				} catch (err) {
+					spinnerElement.innerHTML = "";
 					alert(`Error: ${err.message}`);
 					console.error("Request failed:", err);
 				}
@@ -102,7 +109,7 @@
 				const action = "signup";
 
 				const body = { name, email, password, action };
-				localStorage.setItem("df_email",email)
+
 				try{
 					const res = await fetch("http://127.0.0.1:8000/auth", {
 					method: "POST",
@@ -113,8 +120,10 @@
 				if (!res.ok) {
 					throw new Error(data.detail || "Something went wrong");
 				}
+				localStorage.setItem("token", data.token);
 				alert(data.message);
 				window.location.href = 'index.html';
+
 				} catch (err) {
 					alert(`Error: ${err.message}`);
 					console.error("Request failed:", err);

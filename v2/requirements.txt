@@ -4,3 +4,7 @@ torch
 torchvision
 pillow
 python-multipart
+pymongo
+dotenv
+pydantic
+hashlib

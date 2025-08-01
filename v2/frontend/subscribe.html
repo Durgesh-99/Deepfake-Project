@@ -32,22 +32,34 @@
     </div>
 
     <script>
-        if (!localStorage.getItem("df_email")) {
-            window.location.href = "login.html";
-        }
         // Function to render buttons based on subscription status
         async function renderButtons() {
-            const email = localStorage.getItem("df_email");
+            const token = localStorage.getItem("token");
             let dfd;
             try{
                 const res = await fetch("http://127.0.0.1:8000/get-model", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                headers: { 
+                    "Content-Type": "application/json" ,
+                    "Authorization": `Bearer ${token}`
+                },
                 });
+
+                if (res.status === 401) {
+                    alert("Unauthorized: Your session has expired. Please log in again.");
+                    window.location.href = 'login.html';
+                    return;
+                } else if (res.status === 404) {
+                    alert("User not found.");
+                    return;
+                } else if (!res.ok) {
+                    alert(`Unexpected error: ${res.status}`);
+                    return;
+                }
 
                 const data = await res.json();
                 dfd = data.model;
+
             } catch (err) {
                 alert(`Error: ${err.message}`);
                 console.error("Request failed:", err);
@@ -69,8 +81,11 @@
                     try{
                         const res = await fetch("http://127.0.0.1:8000/subscribe", {
                         method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ email, model:'1_5' }),
+                        headers: { 
+                            "Content-Type": "application/json" ,
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ model:'1_5' }),
                         });
 
                         const data = await res.json();
