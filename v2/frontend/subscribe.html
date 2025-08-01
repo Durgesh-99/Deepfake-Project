@@ -32,25 +32,54 @@
     </div>
 
     <script>
+        if (!localStorage.getItem("df_email")) {
+            window.location.href = "login.html";
+        }
         // Function to render buttons based on subscription status
-        function renderButtons() {
-            const dfd = localStorage.getItem('DFD_SUBSCRIBE');
+        async function renderButtons() {
+            const email = localStorage.getItem("df_email");
+            let dfd;
+            try{
+                const res = await fetch("http://127.0.0.1:8000/get-model", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+                });
+
+                const data = await res.json();
+                dfd = data.model;
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+                console.error("Request failed:", err);
+            }
             const M1_5Element = document.getElementsByClassName("model_1.5")[0];
             const M1_0Element = document.getElementsByClassName("model_1.0")[0];
 
-            if (dfd === 'TRUE') {
+            if (dfd === '1_5') {
                 M1_5Element.innerHTML = '<button class="button-24" style="background-color: white; color: grey;">Currently Using</button>';
                 M1_0Element.innerHTML = '<button class="button-24" style="background-color: white; color: grey;">Default Model</button>';
             } else {
-                M1_5Element.innerHTML = '<button id="subscribe_btn" class="button-24">Subscribe</button>';
+                M1_5Element.innerHTML = '<button id="subscribe_btn" type="button" class="button-24">Subscribe</button>';
                 M1_0Element.innerHTML = '<button class="button-24" style="background-color: white; color: grey;">Currently Using</button>';
 
                 // Attach event listener after button is added to DOM
-                document.getElementById('subscribe_btn').addEventListener('click', function (e) {
+                document.getElementById('subscribe_btn').addEventListener('click', async (e) => {
                     e.preventDefault();
-                    localStorage.setItem('DFD_SUBSCRIBE', 'TRUE');
+                    window.location.href = 'https://rzp.io/rzp/deepfake';
+                    try{
+                        const res = await fetch("http://127.0.0.1:8000/subscribe", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, model:'1_5' }),
+                        });
+
+                        const data = await res.json();
+                        dfd = data.model;
+                    } catch (err) {
+                        alert(`Error: ${err.message}`);
+                        console.error("Request failed:", err);
+                    }
                     alert('Subscribed Successfully! Using Model 1.5');
-                    window.location.href = 'index.html';
                 });
             }
         }

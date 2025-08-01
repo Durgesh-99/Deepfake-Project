@@ -30,6 +30,35 @@
     </div>
 
     <script>
+        if (!localStorage.getItem("df_email")) {
+            window.location.href = "login.html";
+        }
+        async function fetchModel() {
+            const email = localStorage.getItem("df_email");
+            let dfd;
+            try{
+                const res = await fetch("http://127.0.0.1:8000/get-model", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+                });
+
+                const data = await res.json();
+                dfd = data.model;
+                console.log(dfd)
+
+                const modelElement = document.getElementsByClassName("model_id")[0];
+                if (dfd === '1_5') {
+                    modelElement.innerHTML = 'Using Model 1.5';
+                } else {
+                    modelElement.innerHTML = 'Using Model 1.0';
+                }
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+                console.error("Request failed:", err);
+            }
+        }
+
         document.getElementById("fileInput").addEventListener("change", function(event) {
             const file = event.target.files[0];
             if (file) {
@@ -108,15 +137,8 @@
         document.getElementById('subscribe').addEventListener('click', function () {
 				window.location.href = 'subscribe.html';
 			});
-    
-        const dfd = localStorage.getItem('DFD_SUBSCRIBE');
-        const modelElement = document.getElementsByClassName("model_id")[0];
-        if (dfd === 'TRUE') {
-            modelElement.innerHTML = 'Using Model 1.5';
-        } else {
-            modelElement.innerHTML = 'Using Model 1.0';
-        }
 
+        window.onload = fetchModel;
     </script>
 </body>
 </html>
